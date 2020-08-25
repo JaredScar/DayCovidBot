@@ -56,6 +56,7 @@ public class Main {
         /**/
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
+            boolean tweeted = false;
             @Override
             public void run() {
                 try {
@@ -73,7 +74,11 @@ public class Main {
                     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
                     Date startDate = sdf.parse("03/12/2020");
                     Date today = new Date();
-                    if (today.getHours() == 0 && today.getMinutes() == 0) {
+                    if (today.getHours() == 1) {
+                        tweeted = false;
+                    }
+                    if (today.getHours() == 0 && today.getMinutes() == 0 && !tweeted) {
+                        tweeted = true;
                         long diffInMillies = Math.abs(today.getTime() - startDate.getTime());
                         diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                         URL urlForGetRequest = new URL("https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json");
@@ -104,7 +109,7 @@ public class Main {
                         } else {
                             System.out.println("GET NOT WORKED");
                         }
-                        urlForGetRequest = new URL("http://covidtracking.com/api/us");
+                        urlForGetRequest = new URL("https://api.covidtracking.com/v1/us/current.json");
                         readLine = null;
                         conection = (HttpURLConnection) urlForGetRequest.openConnection();
                         conection.setRequestMethod("GET");
@@ -166,7 +171,7 @@ public class Main {
                     ex.printStackTrace();
                 }
             }
-        }, 0L, (1000L * 60)); // Every 60 seconds
+        }, 0L, (1000L * 20)); // Every 20 seconds
         /**/
 
         // This is the status listener
